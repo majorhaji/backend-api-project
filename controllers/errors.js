@@ -3,9 +3,5 @@ exports.handle404s = (req, res, next) => {
 };
 
 exports.handle500s = (err, req, res, next) => {
-  if (err.status === 500) {
-    res.status(500).send({ msg: "Error in code somewhere" });
-  } else {
-    next(err);
-  }
+  res.status(500).send({ msg: "Error in code somewhere" });
 };
