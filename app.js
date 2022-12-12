@@ -8,9 +8,6 @@ app.get("/api/topics", getTopics);
 
 app.all("*", handle404s);
 
-app.use(handle500s, (err, req, res, next) => {
-  console.log(err);
-  res.status(500).send(err);
-});
+app.use(handle500s);
 
 module.exports = app;
