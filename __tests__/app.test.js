@@ -3,6 +3,7 @@ const seed = require("../db/seeds/seed");
 const testData = require("../db/data/test-data/index");
 const app = require("../app");
 const db = require("../db/connection");
+
 require("jest-sorted");
 
 afterAll(() => db.end());
@@ -38,10 +39,6 @@ describe("/api/articles", () => {
         const articles = body.articles;
         expect(articles).toBeInstanceOf(Array);
         expect(articles.length).toBe(12);
-        expect(articles).toBeSorted({
-          descending: true,
-          key: "created_at",
-        });
         articles.forEach((article) => {
           expect(article).toEqual(
             expect.objectContaining({
@@ -55,6 +52,18 @@ describe("/api/articles", () => {
               comment_count: expect.any(Number),
             })
           );
+        });
+      });
+  });
+  it("is sorted by date in descending order ", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        const articles = body.articles;
+        expect(articles).toBeSorted({
+          descending: true,
+          key: "created_at",
         });
       });
   });
