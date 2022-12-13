@@ -3,7 +3,7 @@ const seed = require("../db/seeds/seed");
 const testData = require("../db/data/test-data/index");
 const app = require("../app");
 const db = require("../db/connection");
-const { expect } = require("@jest/globals");
+
 
 require("jest-sorted");
 
