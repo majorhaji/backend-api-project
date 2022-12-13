@@ -2,14 +2,32 @@ const express = require("express");
 const app = express();
 
 const { getTopics } = require("./controllers/controllers.topics");
-const { getArticles } = require("./controllers/controllers.articles");
-const { handle500s, handle404s } = require("./controllers/errors");
+const {
+  getArticles,
+  getArticleById,
+} = require("./controllers/controllers.articles");
+const {
+  handle500s,
+  handle404s,
+  handle400s,
+  handleBadPaths,
+} = require("./controllers/errors");
 
 app.get("/api/topics", getTopics);
 
 app.get("/api/articles", getArticles);
 
-app.all("*", handle404s);
+app.get("/api/articles/:article_id", getArticleById);
+
+app.all("*", handleBadPaths);
+
+app.use(handle404s, (err, req, res, next) => {
+  next(err);
+});
+
+app.use(handle400s, (err, req, res, next) => {
+  next(err);
+});
 
 app.use(handle500s);
 
