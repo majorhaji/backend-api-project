@@ -3,6 +3,7 @@ const seed = require("../db/seeds/seed");
 const testData = require("../db/data/test-data/index");
 const app = require("../app");
 const db = require("../db/connection");
+const { expect } = require("@jest/globals");
 
 require("jest-sorted");
 
@@ -74,18 +75,19 @@ describe("get article by id", () => {
       .get("/api/articles/1")
       .expect(200)
       .then(({ body }) => {
-        const article = body.article;
-        expect(article).toEqual([
-          {
-            article_id: 1,
-            title: "Living in the shadow of a great man",
-            topic: "mitch",
-            author: "butter_bridge",
-            body: "I find this existence challenging",
-            created_at: "2020-07-09T20:11:00.000Z",
-            votes: 100,
-          },
-        ]);
+        const article = body.article[0];
+        expect(article.article_id).toBe(1);
+        expect(article).toEqual(
+          expect.objectContaining({
+            article_id: expect.any(Number),
+            title: expect.any(String),
+            topic: expect.any(String),
+            author: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            body: expect.any(String),
+          })
+        );
       });
   });
 
@@ -93,8 +95,17 @@ describe("get article by id", () => {
     return request(app)
       .get("/api/articles/344")
       .expect(404)
+      .then(({ text }) => {
+        expect(text).toBe("Path not found");
+      });
+  });
+
+  it("400: returns bad path message", () => {
+    return request(app)
+      .get("/api/articles/banana")
+      .expect(400)
       .then(({ body: { msg } }) => {
-        expect(msg).toEqual("Cannot find what you wanted");
+        expect(msg).toEqual("Bad request");
       });
   });
 });

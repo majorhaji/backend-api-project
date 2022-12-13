@@ -14,7 +14,7 @@ exports.selectArticles = () => {
       if (rowCount === 0) {
         return Promise.reject({
           status: 404,
-          msg: "You tried to look for something and it wasn't found",
+          msg: "Path not found",
         });
       }
       return rows;
@@ -28,7 +28,7 @@ exports.selectArticleById = (id) => {
       if (rowCount === 0) {
         return Promise.reject({
           status: 404,
-          msg: "You tried to look for something and it wasn't found",
+          msg: "Path not found",
         });
       }
       return rows;

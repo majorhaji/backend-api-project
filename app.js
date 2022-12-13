@@ -1,8 +1,6 @@
 const express = require("express");
 const app = express();
 
-app.use(express.json());
-
 const { getTopics } = require("./controllers/controllers.topics");
 const {
   getArticles,
@@ -12,7 +10,7 @@ const {
   handle500s,
   handle404s,
   handle400s,
-  handleCustomErrors,
+  handleBadPaths,
 } = require("./controllers/errors");
 
 app.get("/api/topics", getTopics);
@@ -21,15 +19,16 @@ app.get("/api/articles", getArticles);
 
 app.get("/api/articles/:article_id", getArticleById);
 
-app.all("*", handleCustomErrors);
+app.all("*", handleBadPaths);
 
-app.use(handle500s, (err, req, res, next) => {
-  console.log(err);
+app.use(handle404s, (err, req, res, next) => {
   next(err);
 });
 
-app.use(handle404s, (err, req, res, next) => {
-  console.log(err);
+app.use(handle400s, (err, req, res, next) => {
+  next(err);
 });
+
+app.use(handle500s);
 
 module.exports = app;

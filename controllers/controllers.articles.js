@@ -15,10 +15,9 @@ exports.getArticles = (req, res, next) => {
 
 exports.getArticleById = (req, res, next) => {
   const { article_id } = req.params;
-
   selectArticleById(article_id)
-    .then((rows) => {
-      res.status(200).send({ article: rows });
+    .then((article) => {
+      res.status(200).send({ article });
     })
     .catch((err) => {
       next(err);
