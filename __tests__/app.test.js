@@ -117,6 +117,27 @@ describe("get comments by article id", () => {
       .expect(200)
       .then(({ body }) => {
         const comments = body.comments;
+        expect(comments).toBeSorted({
+          descending: true,
+          key: "created_at",
+        });
+      });
+  });
+  it("404: returns message if article has no comments", () => {
+    return request(app)
+      .get("/api/articles/10/comments")
+      .expect(404)
+      .then(({ text }) => {
+        expect(text).toBe("Path not found");
+      });
+  });
+
+  it("200: most recent comments first", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then(({ body }) => {
+        const comments = body.comments;
         comments.forEach((comment) => {
           expect(comment).toEqual(
             expect.objectContaining({
@@ -128,14 +149,6 @@ describe("get comments by article id", () => {
             })
           );
         });
-      });
-  });
-  it("404: returns message if article has no comments", () => {
-    return request(app)
-      .get("/api/articles/10/comments")
-      .expect(404)
-      .then(({ text }) => {
-        expect(text).toBe("Path not found");
       });
   });
 });
