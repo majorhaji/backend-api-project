@@ -67,13 +67,46 @@ describe("/api/articles", () => {
       });
   });
 });
+
+describe("get article by id", () => {
+  it("200: resolves with article", () => {
+    return request(app)
+      .get("/api/articles/1")
+      .expect(200)
+      .then(({ body }) => {
+        const article = body.article;
+        expect(article).toEqual([
+          {
+            article_id: 1,
+            title: "Living in the shadow of a great man",
+            topic: "mitch",
+            author: "butter_bridge",
+            body: "I find this existence challenging",
+            created_at: "2020-07-09T20:11:00.000Z",
+            votes: 100,
+          },
+        ]);
+      });
+  });
+
+  it("404: returns message if it cannot find article with that id", () => {
+    return request(app)
+      .get("/api/articles/344")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toEqual("Cannot find what you wanted");
+      });
+  });
+});
 describe("Error handling", () => {
   it("returns a custom 404 error message", () => {
     return request(app)
       .get("/api/invalid")
       .expect(404)
       .then(({ body: { msg } }) => {
-        expect(msg).toEqual("Cannot find what you wanted");
+        expect(msg).toEqual(
+          "You tried to look for something and it wasn't found"
+        );
       });
   });
 });

@@ -5,7 +5,32 @@ exports.selectArticles = () => {
   GROUP BY articles.article_id 
   ORDER BY articles.created_at desc;`;
 
-  return db.query(SQL).then((articles) => {
-    return articles;
-  });
+  return db
+    .query(SQL)
+    .then((articles) => {
+      return articles;
+    })
+    .then(({ rows, rowCount }) => {
+      if (rowCount === 0) {
+        return Promise.reject({
+          status: 404,
+          msg: "You tried to look for something and it wasn't found",
+        });
+      }
+      return rows;
+    });
+};
+
+exports.selectArticleById = (id) => {
+  return db
+    .query(`SELECT * FROM articles WHERE article_id=$1;`, [id])
+    .then(({ rows, rowCount }) => {
+      if (rowCount === 0) {
+        return Promise.reject({
+          status: 404,
+          msg: "You tried to look for something and it wasn't found",
+        });
+      }
+      return rows;
+    });
 };
