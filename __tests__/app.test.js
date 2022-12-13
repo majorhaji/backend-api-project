@@ -109,6 +109,37 @@ describe("get article by id", () => {
       });
   });
 });
+
+describe("get comments by article id", () => {
+  it("200: returns comments for given id", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then(({ body }) => {
+        const comments = body.comments;
+        comments.forEach((comment) => {
+          expect(comment).toEqual(
+            expect.objectContaining({
+              comment_id: expect.any(Number),
+              votes: expect.any(Number),
+              created_at: expect.any(String),
+              author: expect.any(String),
+              body: expect.any(String),
+            })
+          );
+        });
+      });
+  });
+  it("404: returns message if article has no comments", () => {
+    return request(app)
+      .get("/api/articles/10/comments")
+      .expect(404)
+      .then(({ text }) => {
+        expect(text).toBe("Path not found");
+      });
+  });
+});
+
 describe("Error handling", () => {
   it("returns a custom 404 error message", () => {
     return request(app)

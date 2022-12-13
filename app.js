@@ -5,6 +5,7 @@ const { getTopics } = require("./controllers/controllers.topics");
 const {
   getArticles,
   getArticleById,
+  getCommentsByArticleId,
 } = require("./controllers/controllers.articles");
 const {
   handle500s,
@@ -18,6 +19,8 @@ app.get("/api/topics", getTopics);
 app.get("/api/articles", getArticles);
 
 app.get("/api/articles/:article_id", getArticleById);
+
+app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 
 app.all("*", handleBadPaths);
 
