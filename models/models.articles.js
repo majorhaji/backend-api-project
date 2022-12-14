@@ -35,6 +35,26 @@ exports.selectArticleById = (id) => {
     });
 };
 
+exports.writeArticleById = (id, body) => {
+  const { inc_votes } = body;
+
+  if (typeof inc_votes === "number") {
+    return db
+      .query(
+        `UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *;`,
+        [inc_votes, id]
+      )
+      .then(({ rows }) => {
+        return rows;
+      });
+  } else {
+    return Promise.reject({
+      status: 400,
+      msg: "Request not formatted correctly",
+    });
+  }
+};
+
 exports.selectCommentsByArticleId = (id) => {
   return db
     .query(
@@ -49,7 +69,7 @@ exports.selectCommentsByArticleId = (id) => {
 exports.writeCommentByArticleId = (id, posted) => {
   const { username, body } = posted;
 
-  if (username && body) {
+  if (typeof username === "string" && typeof body === "string") {
     return db
       .query(
         `INSERT INTO comments (author, body, article_id) VALUES ($1, $2, $3) RETURNING *;`,

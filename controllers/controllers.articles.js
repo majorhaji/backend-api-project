@@ -3,6 +3,7 @@ const {
   selectArticleById,
   selectCommentsByArticleId,
   writeCommentByArticleId,
+  writeArticleById,
 } = require("../models/models.articles");
 
 exports.getArticles = (req, res, next) => {
@@ -18,6 +19,22 @@ exports.getArticles = (req, res, next) => {
 exports.getArticleById = (req, res, next) => {
   const { article_id } = req.params;
   selectArticleById(article_id)
+    .then((article) => {
+      res.status(200).send({ article });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.patchArticleById = (req, res, next) => {
+  const { article_id } = req.params;
+  const { body } = req;
+
+  selectArticleById(article_id)
+    .then(() => {
+      return writeArticleById(article_id, body);
+    })
     .then((article) => {
       res.status(200).send({ article });
     })
