@@ -95,8 +95,8 @@ describe("get article by id", () => {
     return request(app)
       .get("/api/articles/344")
       .expect(404)
-      .then(({ text }) => {
-        expect(text).toBe("Path not found");
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Article not found");
       });
   });
 
@@ -127,8 +127,8 @@ describe("get comments by article id", () => {
     return request(app)
       .get("/api/articles/404044/comments")
       .expect(404)
-      .then(({ text }) => {
-        expect(text).toBe("Path not found");
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Article not found");
       });
   });
 

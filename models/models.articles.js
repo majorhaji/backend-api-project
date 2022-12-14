@@ -28,7 +28,7 @@ exports.selectArticleById = (id) => {
       if (rowCount === 0) {
         return Promise.reject({
           status: 404,
-          msg: "Path not found",
+          msg: "Article not found",
         });
       }
       return rows;

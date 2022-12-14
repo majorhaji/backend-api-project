@@ -16,7 +16,7 @@ exports.handle400s = (err, req, res, next) => {
 exports.handle404s = (err, req, res, next) => {
   if (err.status === 404) {
     console.log(err);
-    res.status(404).send(err.msg);
+    res.status(404).send(err);
   } else {
     next(err);
   }
