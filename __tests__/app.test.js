@@ -139,16 +139,6 @@ describe("get comments by article id", () => {
       .then(({ body: { msg } }) => expect(msg).toBe("Bad request"));
   });
 
-  it("404: returns nothing if article has no comments", () => {
-    return request(app)
-      .get("/api/articles/10/comments")
-      .expect(404)
-      .then(({ body }) => {
-        const comments = body.comments;
-        expect(comments).toEqual(undefined);
-      });
-  });
-
   it("200: returns comments for given id", () => {
     return request(app)
       .get("/api/articles/1/comments")
