@@ -1,6 +1,7 @@
 const {
   selectArticles,
   selectArticleById,
+  selectCommentsByArticleId,
 } = require("../models/models.articles");
 
 exports.getArticles = (req, res, next) => {
@@ -18,6 +19,22 @@ exports.getArticleById = (req, res, next) => {
   selectArticleById(article_id)
     .then((article) => {
       res.status(200).send({ article });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.getCommentsByArticleId = (req, res, next) => {
+  const { article_id } = req.params;
+  selectArticleById(article_id)
+    .then(() => {
+      return selectCommentsByArticleId(article_id);
+    })
+    .then((rows) => {
+      res.status(200).send({
+        comments: rows,
+      });
     })
     .catch((err) => {
       next(err);

@@ -28,9 +28,20 @@ exports.selectArticleById = (id) => {
       if (rowCount === 0) {
         return Promise.reject({
           status: 404,
-          msg: "Path not found",
+          msg: "Article not found",
         });
       }
+      return rows;
+    });
+};
+
+exports.selectCommentsByArticleId = (id) => {
+  return db
+    .query(
+      `SELECT comment_id, comments.votes, comments.created_at, comments.author, comments.body FROM articles JOIN comments ON articles.article_id = comments.article_id WHERE articles.article_id=$1 ORDER BY created_at DESC;`,
+      [id]
+    )
+    .then(({ rows }) => {
       return rows;
     });
 };
