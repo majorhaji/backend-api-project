@@ -111,7 +111,7 @@ describe("get article by id", () => {
 });
 
 describe("get comments by article id", () => {
-  it("200: returns comments for given id", () => {
+  it("200: most recent comments first", () => {
     return request(app)
       .get("/api/articles/1/comments")
       .expect(200)
@@ -123,16 +123,33 @@ describe("get comments by article id", () => {
         });
       });
   });
-  it("404: returns message if article has no comments", () => {
+  it("404: returns message if path not found", () => {
     return request(app)
-      .get("/api/articles/10/comments")
+      .get("/api/articles/404044/comments")
       .expect(404)
       .then(({ text }) => {
         expect(text).toBe("Path not found");
       });
   });
 
-  it("200: most recent comments first", () => {
+  it("400: returns message if bad request", () => {
+    return request(app)
+      .get("/api/articles/banana")
+      .expect(400)
+      .then(({ body: { msg } }) => expect(msg).toBe("Bad request"));
+  });
+
+  it("404: returns nothing if article has no comments", () => {
+    return request(app)
+      .get("/api/articles/10/comments")
+      .expect(404)
+      .then(({ body }) => {
+        const comments = body.comments;
+        expect(comments).toEqual(undefined);
+      });
+  });
+
+  it("200: returns comments for given id", () => {
     return request(app)
       .get("/api/articles/1/comments")
       .expect(200)
