@@ -41,13 +41,7 @@ exports.selectCommentsByArticleId = (id) => {
       `SELECT comment_id, comments.votes, comments.created_at, comments.author, comments.body FROM articles JOIN comments ON articles.article_id = comments.article_id WHERE articles.article_id=$1 ORDER BY created_at DESC;`,
       [id]
     )
-    .then(({ rows, rowCount }) => {
-      if (rowCount === 0) {
-        return Promise.reject({
-          status: 404,
-          msg: "Path not found",
-        });
-      }
+    .then(({ rows }) => {
       return rows;
     });
 };

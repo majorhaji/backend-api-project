@@ -123,7 +123,7 @@ describe("get comments by article id", () => {
         });
       });
   });
-  it("404: returns message if path not found", () => {
+  it("404: returns message if article id doesn't exist", () => {
     return request(app)
       .get("/api/articles/404044/comments")
       .expect(404)
@@ -156,6 +156,16 @@ describe("get comments by article id", () => {
             })
           );
         });
+      });
+  });
+
+  it("200: sends back empty array if no comments", () => {
+    return request(app)
+      .get("/api/articles/10/comments")
+      .expect(200)
+      .then(({ body }) => {
+        const comments = body.comments;
+        expect(comments).toEqual([]);
       });
   });
 });
