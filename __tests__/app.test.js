@@ -4,7 +4,6 @@ const testData = require("../db/data/test-data/index");
 const app = require("../app");
 const db = require("../db/connection");
 
-
 require("jest-sorted");
 
 afterAll(() => db.end());
@@ -166,6 +165,68 @@ describe("get comments by article id", () => {
       .then(({ body }) => {
         const comments = body.comments;
         expect(comments).toEqual([]);
+      });
+  });
+});
+
+describe("POST to /api/articles/:article_id/comments", () => {
+  it("201: Posts req body to comments table with article id, returns posted ", () => {
+    const newComment = { username: "butter_bridge", body: "Made pasta today" };
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send(newComment)
+      .then(({ body: { comment } }) => {
+        expect(comment[0]).toEqual(
+          expect.objectContaining({
+            comment_id: expect.any(Number),
+            body: "Made pasta today",
+            votes: expect.any(Number),
+            author: "butter_bridge",
+            article_id: 2,
+            created_at: expect.any(String),
+          })
+        );
+      });
+  });
+
+  it("400: Content in request body has missing property", () => {
+    const newComment = {
+      username: "butter_bridge",
+    };
+    return request(app)
+      .post("/api/articles/3/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Request isn't formatted correctly");
+      });
+  });
+
+  it("400: Bad path", () => {
+    const newComment = {
+      username: "butter_bridge",
+      body: "lala",
+    };
+    return request(app)
+      .post("/api/articles/apple/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad request");
+      });
+  });
+
+  it("404: invalid article id", () => {
+    const newComment = {
+      username: "butter_bridge",
+      body: "hi",
+    };
+    return request(app)
+      .post("/api/articles/3048432/comments")
+      .send(newComment)
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Article not found");
       });
   });
 });

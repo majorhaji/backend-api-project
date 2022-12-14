@@ -5,9 +5,9 @@ exports.handleBadPaths = (req, res, next) => {
 };
 
 exports.handle400s = (err, req, res, next) => {
-  if (err.code === "22P02") {
+  if (err.code === "22P02" || err.status === 400) {
     console.log(err);
-    res.status(400).send({ msg: "Bad request" });
+    res.status(400).send(err.code === "22P02" ? { msg: "Bad request" } : err);
   } else {
     next(err);
   }

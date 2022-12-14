@@ -45,3 +45,23 @@ exports.selectCommentsByArticleId = (id) => {
       return rows;
     });
 };
+
+exports.writeCommentByArticleId = (id, posted) => {
+  const { username, body } = posted;
+
+  if (username && body) {
+    return db
+      .query(
+        `INSERT INTO comments (author, body, article_id) VALUES ($1, $2, $3) RETURNING *;`,
+        [username, body, id]
+      )
+      .then(({ rows }) => {
+        return rows;
+      });
+  } else {
+    return Promise.reject({
+      status: 400,
+      msg: "Request isn't formatted correctly",
+    });
+  }
+};
