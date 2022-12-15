@@ -202,6 +202,20 @@ describe("POST to /api/articles/:article_id/comments", () => {
       });
   });
 
+  it("400: Non string is given as username ", () => {
+    const newComment = {
+      username: 1,
+      body: "Pizza",
+    };
+    return request(app)
+      .post("/api/articles/3/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Request isn't formatted correctly");
+      });
+  });
+
   it("400: Bad path", () => {
     const newComment = {
       username: "butter_bridge",
@@ -239,6 +253,94 @@ describe("POST to /api/articles/:article_id/comments", () => {
       .expect(400)
       .then(({ body: { msg } }) => {
         expect(msg).toBe("Username does not exist");
+      });
+  });
+});
+
+describe("Patch /api/articles/:article_id", () => {
+  it("200: responds with article with updated vote", () => {
+    const updatedVote = { inc_votes: 500 };
+
+    return request(app)
+      .post("/api/articles/1")
+      .send(updatedVote)
+      .expect(200)
+      .then(({ body: { article } }) => {
+        expect(article[0].votes).toBe(600);
+      });
+  });
+
+  it("404: responds with message if article id doesn't exist", () => {
+    const updatedVote = { inc_votes: 500 };
+    return request(app)
+      .post("/api/articles/3048")
+      .send(updatedVote)
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Article not found");
+      });
+  });
+
+  it("400: responds with message if request body doesn't have integer", () => {
+    const updatedVote = { inc_votes: "banana" };
+    return request(app)
+      .post("/api/articles/1")
+      .send(updatedVote)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Request not formatted correctly");
+      });
+  });
+
+  it("400: if body is empty, returns article", () => {
+    const updatedVote = {};
+    return request(app)
+      .post("/api/articles/1")
+      .send(updatedVote)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Request not formatted correctly");
+      });
+  });
+
+  it("200: votes empty", () => {
+    const updatedVote = { inc_votes: -100 };
+    return request(app)
+      .post("/api/articles/2")
+      .send(updatedVote)
+      .expect(200)
+      .then(({ body: { article } }) => {
+        expect(article[0].votes).toBe(-100);
+      });
+  });
+
+  it("400: bad path", () => {
+    const updatedVote = { inc_votes: -100 };
+    return request(app)
+      .post("/api/articles/banana")
+      .send(updatedVote)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad request");
+      });
+  });
+});
+
+describe("get users", () => {
+  it("200: returns users with username, name, avatar_url", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body: { users } }) => {
+        users.forEach((user) => {
+          expect(user).toEqual(
+            expect.objectContaining({
+              username: expect.any(String),
+              name: expect.any(String),
+              avatar_url: expect.stringContaining("https://"),
+            })
+          );
+        });
       });
   });
 });
