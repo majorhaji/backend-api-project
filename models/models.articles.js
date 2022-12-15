@@ -55,6 +55,7 @@ exports.writeArticleById = (id, body) => {
   }
 };
 
+
 exports.selectCommentsByArticleId = (id) => {
   return db
     .query(
@@ -71,10 +72,21 @@ exports.writeCommentByArticleId = (id, posted) => {
 
   if (typeof username === "string" && typeof body === "string") {
     return db
-      .query(
-        `INSERT INTO comments (author, body, article_id) VALUES ($1, $2, $3) RETURNING *;`,
-        [username, body, id]
-      )
+      .query(`SELECT * FROM users WHERE username =$1;`, [username])
+      .then(({ rowCount }) => {
+        if (rowCount === 0) {
+          return Promise.reject({
+            status: 400,
+            msg: "Username does not exist",
+          });
+        }
+      })
+      .then(() => {
+        return db.query(
+          `INSERT INTO comments (author, body, article_id) VALUES ($1, $2, $3) RETURNING *;`,
+          [username, body, id]
+        );
+      })
       .then(({ rows }) => {
         return rows;
       });

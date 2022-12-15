@@ -243,6 +243,18 @@ describe("POST to /api/articles/:article_id/comments", () => {
         expect(msg).toBe("Article not found");
       });
   });
+
+  it("404: username not in database", () => {
+    const newComment = { username: "yusuf", body: "lol" };
+
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Username does not exist");
+      });
+  });
 });
 
 describe("Patch /api/articles/:article_id", () => {
@@ -276,7 +288,7 @@ describe("Patch /api/articles/:article_id", () => {
       .send(updatedVote)
       .expect(400)
       .then(({ body: { msg } }) => {
-        expect(msg).toBe("Request not formatted correctly");
+        expect(msg).toBe("Bad request");
       });
   });
 
