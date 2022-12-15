@@ -314,6 +314,25 @@ describe("Patch /api/articles/:article_id", () => {
   });
 });
 
+describe("get users", () => {
+  it("200: returns users with username, name, avatar_url", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body: { users } }) => {
+        users.forEach((user) => {
+          expect(user).toEqual(
+            expect.objectContaining({
+              username: expect.any(String),
+              name: expect.any(String),
+              avatar_url: expect.stringContaining("https://"),
+            })
+          );
+        });
+      });
+  });
+});
+
 describe("Error handling", () => {
   it("returns a custom 404 error message", () => {
     return request(app)
