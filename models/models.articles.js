@@ -1,10 +1,32 @@
 const db = require("../db/connection.js");
 
-exports.selectArticles = () => {
-  const SQL = `SELECT articles.article_id, articles.author, articles.created_at, title, topic, articles.votes, COUNT(comments.article_id)::int AS comment_count FROM articles LEFT JOIN comments ON comments.article_id =articles.article_id 
-  GROUP BY articles.article_id 
-  ORDER BY articles.created_at desc;`;
+exports.selectArticles = (query) => {
+  const validQueries = ["topic"];
 
+  let sort_by = "";
+  let order = "desc";
+  const queryKey = Object.keys(query)[0];
+
+  queryKey === "sort_by"
+    ? (sort_by = query[queryKey])
+    : (sort_by = "created_at");
+
+  if (query[queryKey] === "asc") order = "asc";
+
+  let SQL = `SELECT articles.article_id, articles.author, articles.created_at, title, topic, articles.votes, COUNT(comments.article_id)::int AS comment_count FROM articles LEFT JOIN comments ON comments.article_id =articles.article_id`;
+
+  let groupBy = ` GROUP BY articles.article_id`;
+
+  let orderBy = ` ORDER BY articles.${sort_by} ${order};`;
+
+  if (validQueries.includes(queryKey) && query[queryKey]) {
+    let queryString = "";
+    queryString += ` WHERE ${queryKey}='${query[queryKey]}'`;
+    SQL += queryString;
+  }
+  SQL += groupBy;
+  SQL += orderBy;
+  console.log(SQL);
   return db
     .query(SQL)
     .then((articles) => {

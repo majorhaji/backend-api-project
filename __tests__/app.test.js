@@ -3,6 +3,7 @@ const seed = require("../db/seeds/seed");
 const testData = require("../db/data/test-data/index");
 const app = require("../app");
 const db = require("../db/connection");
+const { TestWatcher } = require("jest");
 
 require("jest-sorted");
 
@@ -310,6 +311,114 @@ describe("Patch /api/articles/:article_id", () => {
       .expect(400)
       .then(({ body: { msg } }) => {
         expect(msg).toBe("Bad request");
+      });
+  });
+});
+
+describe("article queries", () => {
+  test("/api/articles?topic=cats filters articles only for cat articles", () => {
+    return request(app)
+      .get("/api/articles?topic=cats")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        articles.forEach((article) => {
+          expect(article).toEqual(
+            expect.objectContaining({
+              article_id: expect.any(Number),
+              title: expect.any(String),
+              topic: "cats",
+              author: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              comment_count: expect.any(Number),
+            })
+          );
+        });
+      });
+  });
+
+  test("/api/articles?topic= without a query returns all articles", () => {
+    return request(app)
+      .get("/api/articles?topic")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles.length).toEqual(12);
+      });
+  });
+
+  test("200: sort by votes defaults to descending", () => {
+    return request(app)
+      .get("/api/articles?sort_by=votes")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeSorted({ descending: true, key: "votes" });
+      });
+  });
+
+  test("200: sort by title defaults to descending", () => {
+    return request(app)
+      .get("/api/articles?sort_by=title")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeSorted({ descending: true, key: "title" });
+      });
+  });
+
+  test("200: set order to ascending", () => {
+    return request(app)
+      .get("/api/articles?order=asc")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeSorted({ ascending: true, key: "created_at" });
+      });
+  });
+
+  it("200: sort_by and order in same query", () => {
+    return request(app)
+      .get("/api/articles?topic=cats&sort_by=votes&order=asc")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeSorted({ ascending: true, key: "votes" });
+        articles.forEach((article) => {
+          expect(article).toEqual(
+            expect.objectContaining({
+              article_id: expect.any(Number),
+              title: expect.any(String),
+              topic: "cats",
+              author: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              comment_count: expect.any(Number),
+            })
+          );
+        });
+      });
+  });
+
+  it("404: topic doesn't exist", () => {
+    return request(app)
+      .get("/api/articles?topic=legolas")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Path not found");
+      });
+  });
+
+  it("400: sort by a number", () => {
+    return request(app)
+      .get("/api/articles?sort_by=39")
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad request");
+      });
+  });
+
+  it("400: order by a number", () => {
+    return request(app)
+      .get("/api/articles?order=39")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles.length).toBe(12);
       });
   });
 });
