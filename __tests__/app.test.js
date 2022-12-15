@@ -288,7 +288,7 @@ describe("Patch /api/articles/:article_id", () => {
       .send(updatedVote)
       .expect(400)
       .then(({ body: { msg } }) => {
-        expect(msg).toBe("Bad request");
+        expect(msg).toBe("Request not formatted correctly");
       });
   });
 
