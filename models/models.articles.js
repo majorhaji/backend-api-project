@@ -38,13 +38,16 @@ exports.selectArticleById = (id) => {
 exports.writeArticleById = (id, body) => {
   const { inc_votes } = body;
 
-  if (typeof inc_votes === "number") {
+  if (inc_votes) {
     return db
       .query(
         `UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *;`,
         [inc_votes, id]
       )
-      .then(({ rows }) => {
+      .then(({ rows, rowCount }) => {
+        if (rowCount === 0) {
+          return Promise.reject({ status: 400, msg: "Bad request" });
+        }
         return rows;
       });
   } else {
