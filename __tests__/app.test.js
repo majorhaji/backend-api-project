@@ -332,26 +332,11 @@ describe("article queries", () => {
               created_at: expect.any(String),
               votes: expect.any(Number),
               comment_count: expect.any(Number),
-
-describe("get users", () => {
-  it("200: returns users with username, name, avatar_url", () => {
-    return request(app)
-      .get("/api/users")
-      .expect(200)
-      .then(({ body: { users } }) => {
-        users.forEach((user) => {
-          expect(user).toEqual(
-            expect.objectContaining({
-              username: expect.any(String),
-              name: expect.any(String),
-              avatar_url: expect.stringContaining("https://"),
-
             })
           );
         });
       });
   });
-
 
   test("/api/articles?topic= without a query returns all articles", () => {
     return request(app)
@@ -437,7 +422,25 @@ describe("get users", () => {
         expect(articles.length).toBe(12);
       });
   });
+});
 
+describe("get users", () => {
+  it("200: returns users with username, name, avatar_url", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body: { users } }) => {
+        users.forEach((user) => {
+          expect(user).toEqual(
+            expect.objectContaining({
+              username: expect.any(String),
+              name: expect.any(String),
+              avatar_url: expect.stringContaining("https://"),
+            })
+          );
+        });
+      });
+  });
 });
 
 describe("Error handling", () => {
