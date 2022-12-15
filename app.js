@@ -10,6 +10,9 @@ const {
   patchArticleById,
 } = require("./controllers/controllers.articles");
 
+
+const { getUsers } = require("./controllers/controllers.users");
+
 const {
   handle500s,
   handle404s,
@@ -30,6 +33,8 @@ app.post("/api/articles/:article_id", patchArticleById);
 app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 
 app.post("/api/articles/:article_id/comments", postCommentByArticleId);
+
+app.get("/api/users", getUsers);
 
 app.all("*", handleBadPaths);
 

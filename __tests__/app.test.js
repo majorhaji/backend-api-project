@@ -244,18 +244,30 @@ describe("POST to /api/articles/:article_id/comments", () => {
         expect(msg).toBe("Article not found");
       });
   });
+
+  it("404: username not in database", () => {
+    const newComment = { username: "yusuf", body: "lol" };
+
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Username does not exist");
+      });
+  });
 });
 
 describe("Patch /api/articles/:article_id", () => {
   it("200: responds with article with updated vote", () => {
     const updatedVote = { inc_votes: 500 };
-
     return request(app)
       .post("/api/articles/1")
       .send(updatedVote)
       .expect(200)
       .then(({ body: { article } }) => {
-        expect(article[0].votes).toBe(600);
+        expect(article.votes).toBe(600);
+        expect(article.article_id).toBe(1);
       });
   });
 
@@ -292,17 +304,6 @@ describe("Patch /api/articles/:article_id", () => {
       });
   });
 
-  it("200: votes empty", () => {
-    const updatedVote = { inc_votes: -100 };
-    return request(app)
-      .post("/api/articles/2")
-      .send(updatedVote)
-      .expect(200)
-      .then(({ body: { article } }) => {
-        expect(article[0].votes).toBe(-100);
-      });
-  });
-
   it("400: bad path", () => {
     const updatedVote = { inc_votes: -100 };
     return request(app)
@@ -331,11 +332,26 @@ describe("article queries", () => {
               created_at: expect.any(String),
               votes: expect.any(Number),
               comment_count: expect.any(Number),
+
+describe("get users", () => {
+  it("200: returns users with username, name, avatar_url", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body: { users } }) => {
+        users.forEach((user) => {
+          expect(user).toEqual(
+            expect.objectContaining({
+              username: expect.any(String),
+              name: expect.any(String),
+              avatar_url: expect.stringContaining("https://"),
+
             })
           );
         });
       });
   });
+
 
   test("/api/articles?topic= without a query returns all articles", () => {
     return request(app)
@@ -421,6 +437,7 @@ describe("article queries", () => {
         expect(articles.length).toBe(12);
       });
   });
+
 });
 
 describe("Error handling", () => {
