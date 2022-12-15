@@ -45,7 +45,7 @@ exports.writeArticleById = (id, body) => {
         [inc_votes, id]
       )
       .then(({ rows }) => {
-        return rows;
+        return rows[0];
       });
   } else {
     return Promise.reject({

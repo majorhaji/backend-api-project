@@ -248,13 +248,13 @@ describe("POST to /api/articles/:article_id/comments", () => {
 describe("Patch /api/articles/:article_id", () => {
   it("200: responds with article with updated vote", () => {
     const updatedVote = { inc_votes: 500 };
-
     return request(app)
       .post("/api/articles/1")
       .send(updatedVote)
       .expect(200)
       .then(({ body: { article } }) => {
-        expect(article[0].votes).toBe(600);
+        expect(article.votes).toBe(600);
+        expect(article.article_id).toBe(1);
       });
   });
 
@@ -288,17 +288,6 @@ describe("Patch /api/articles/:article_id", () => {
       .expect(400)
       .then(({ body: { msg } }) => {
         expect(msg).toBe("Request not formatted correctly");
-      });
-  });
-
-  it("200: votes empty", () => {
-    const updatedVote = { inc_votes: -100 };
-    return request(app)
-      .post("/api/articles/2")
-      .send(updatedVote)
-      .expect(200)
-      .then(({ body: { article } }) => {
-        expect(article[0].votes).toBe(-100);
       });
   });
 
