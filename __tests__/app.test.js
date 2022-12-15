@@ -291,7 +291,7 @@ describe("Patch /api/articles/:article_id", () => {
       });
   });
 
-  it("200: Can decrease tests if vote number is 0", () => {
+  it("200: Can decrease vote if vote number is 0", () => {
     const updatedVote = { inc_votes: -100 };
     return request(app)
       .post("/api/articles/2")
