@@ -288,7 +288,7 @@ describe("Patch /api/articles/:article_id", () => {
       .send(updatedVote)
       .expect(400)
       .then(({ body: { msg } }) => {
-        expect(msg).toBe("Request not formatted correctly");
+        expect(msg).toBe("Bad request");
       });
   });
 
@@ -303,7 +303,7 @@ describe("Patch /api/articles/:article_id", () => {
       });
   });
 
-  it("200: votes empty", () => {
+  it("200: Can decrease vote if vote number is 0", () => {
     const updatedVote = { inc_votes: -100 };
     return request(app)
       .post("/api/articles/2")
