@@ -74,8 +74,7 @@ describe("get article by id", () => {
     return request(app)
       .get("/api/articles/1")
       .expect(200)
-      .then(({ body }) => {
-        const article = body.article[0];
+      .then(({ body: { article } }) => {
         expect(article.article_id).toBe(1);
         expect(article).toEqual(
           expect.objectContaining({
@@ -466,6 +465,29 @@ describe("delete comment by id", () => {
       });
   });
 });
+describe("get article by id returns comment count", () => {
+  it("200: resolves with article", () => {
+    return request(app)
+      .get("/api/articles/1")
+      .expect(200)
+      .then(({ body: { article } }) => {
+        expect(article.article_id).toBe(1);
+        expect(article).toEqual(
+          expect.objectContaining({
+            article_id: 1,
+            title: expect.any(String),
+            topic: expect.any(String),
+            author: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            body: expect.any(String),
+            comment_count: expect.any(Number),
+          })
+        );
+      });
+  });
+});
+
 describe("Error handling", () => {
   it("returns a custom 404 error message", () => {
     return request(app)
