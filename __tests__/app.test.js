@@ -260,7 +260,7 @@ describe("Patch /api/articles/:article_id", () => {
   it("200: responds with article with updated vote", () => {
     const updatedVote = { inc_votes: 500 };
     return request(app)
-      .post("/api/articles/1")
+      .patch("/api/articles/1")
       .send(updatedVote)
       .expect(200)
       .then(({ body: { article } }) => {
@@ -272,7 +272,7 @@ describe("Patch /api/articles/:article_id", () => {
   it("404: responds with message if article id doesn't exist", () => {
     const updatedVote = { inc_votes: 500 };
     return request(app)
-      .post("/api/articles/3048")
+      .patch("/api/articles/3048")
       .send(updatedVote)
       .expect(404)
       .then(({ body: { msg } }) => {
@@ -283,7 +283,7 @@ describe("Patch /api/articles/:article_id", () => {
   it("400: responds with message if request body doesn't have integer", () => {
     const updatedVote = { inc_votes: "banana" };
     return request(app)
-      .post("/api/articles/1")
+      .patch("/api/articles/1")
       .send(updatedVote)
       .expect(400)
       .then(({ body: { msg } }) => {
@@ -294,7 +294,7 @@ describe("Patch /api/articles/:article_id", () => {
   it("400: if body is empty, returns article", () => {
     const updatedVote = {};
     return request(app)
-      .post("/api/articles/1")
+      .patch("/api/articles/1")
       .send(updatedVote)
       .expect(400)
       .then(({ body: { msg } }) => {
@@ -305,7 +305,7 @@ describe("Patch /api/articles/:article_id", () => {
   it("400: bad path", () => {
     const updatedVote = { inc_votes: -100 };
     return request(app)
-      .post("/api/articles/banana")
+      .patch("/api/articles/banana")
       .send(updatedVote)
       .expect(400)
       .then(({ body: { msg } }) => {

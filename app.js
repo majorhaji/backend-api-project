@@ -1,18 +1,11 @@
 const express = require("express");
 const app = express();
 
-const { getEndpoints } = require("./controllers/controllers.endpoints");
-const { getTopics } = require("./controllers/controllers.topics");
+const apiRouter = require("./routes/api-router");
 const {
-  getArticles,
-  getArticleById,
-  getCommentsByArticleId,
   postCommentByArticleId,
   patchArticleById,
 } = require("./controllers/controllers.articles");
-
-const { getUsers } = require("./controllers/controllers.users");
-const { deleteCommentById } = require("./controllers/controllers.comments");
 
 const {
   handle500s,
@@ -21,25 +14,13 @@ const {
   handleBadPaths,
 } = require("./controllers/errors");
 
+app.use("/api", apiRouter);
+
 app.use(express.json());
 
-app.get("/api", getEndpoints);
-
-app.get("/api/topics", getTopics);
-
-app.get("/api/articles", getArticles);
-
-app.get("/api/articles/:article_id", getArticleById);
-
-app.post("/api/articles/:article_id", patchArticleById);
-
-app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
+app.patch("/api/articles/:article_id", patchArticleById);
 
 app.post("/api/articles/:article_id/comments", postCommentByArticleId);
-
-app.get("/api/users", getUsers);
-
-app.delete("/api/comments/:comment_id", deleteCommentById);
 
 app.all("*", handleBadPaths);
 
