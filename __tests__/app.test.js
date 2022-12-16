@@ -443,6 +443,29 @@ describe("get users", () => {
   });
 });
 
+describe("delete comment by id", () => {
+  it("204: deletes comment and responds with no content", () => {
+    return request(app).delete("/api/comments/2").expect(204);
+  });
+
+  it("404: comment id doesn't exist", () => {
+    return request(app)
+      .delete("/api/comments/1099292")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Path not found");
+      });
+  });
+
+  it("400: comment id is a string", () => {
+    return request(app)
+      .delete("/api/comments/orange")
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad request");
+      });
+  });
+});
 describe("Error handling", () => {
   it("returns a custom 404 error message", () => {
     return request(app)
