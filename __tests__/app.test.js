@@ -74,8 +74,7 @@ describe("get article by id", () => {
     return request(app)
       .get("/api/articles/1")
       .expect(200)
-      .then(({ body }) => {
-        const article = body.article[0];
+      .then(({ body: { article } }) => {
         expect(article.article_id).toBe(1);
         expect(article).toEqual(
           expect.objectContaining({
@@ -428,8 +427,7 @@ describe("get article by id returns comment count", () => {
     return request(app)
       .get("/api/articles/1")
       .expect(200)
-      .then(({ body }) => {
-        const article = body.article[0];
+      .then(({ body: { article } }) => {
         expect(article.article_id).toBe(1);
         expect(article).toEqual(
           expect.objectContaining({

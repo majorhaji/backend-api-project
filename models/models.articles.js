@@ -59,7 +59,7 @@ exports.selectArticleById = (id) => {
           msg: "Article not found",
         });
       }
-      return rows;
+      return rows[0];
     });
 };
 
