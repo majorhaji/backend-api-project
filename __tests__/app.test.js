@@ -3,7 +3,6 @@ const seed = require("../db/seeds/seed");
 const testData = require("../db/data/test-data/index");
 const app = require("../app");
 const db = require("../db/connection");
-const { TestWatcher } = require("jest");
 
 require("jest-sorted");
 
@@ -484,6 +483,18 @@ describe("get article by id returns comment count", () => {
             comment_count: expect.any(Number),
           })
         );
+      });
+  });
+});
+
+describe("get api", () => {
+  it("200: resolves with contents of endpoints.json", () => {
+    return request(app)
+      .get("/api")
+      .expect(200)
+      .then(({ body: { endpoints } }) => {
+        const keys = Object.keys(endpoints);
+        expect(keys.includes("GET /api")).toBe(true);
       });
   });
 });

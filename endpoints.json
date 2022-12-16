@@ -10,7 +10,7 @@
     }
   },
   "GET /api/articles": {
-    "description": "serves an array of all topics",
+    "description": "serves an array of all articles",
     "queries": ["author", "topic", "sort_by", "order"],
     "exampleResponse": {
       "articles": [
@@ -23,5 +23,81 @@
         }
       ]
     }
+  },
+  "GET /api/articles/:article_id": {
+    "description": "gives you an article object based on the id in path",
+    "exampleResponse": {
+          "article_id": 2,
+          "author": "dinosaur_lover",
+          "title": "Seafood substitutions are increasing",
+          "topic": "cooking",
+          "body": "Text from the article..",
+          "created_at": 1527695953341,
+          "votes": 0,
+          "comment_count": 12
+    }
+  },
+
+  "GET /api/articles/:article_id/comments": {
+    "description": "gives you an array of comments based on the article id in path",
+    "exampleResponse": {
+      "comments": [
+        {
+          "comment_id": 3,
+          "author": "dinosaur_lover",
+          "body": "Text from the article..",
+          "created_at": 1527695953341,
+          "votes": 12
+        },
+        {
+          "comment_id": 1,
+          "author": "adam",
+          "body": "Text from the article..",
+          "created_at": 1527653993810,
+          "votes": 100
+        }
+
+      ]
+    }
+  
+  },
+
+  "POST /api/articles/:article_id/comments": {
+    "description": "allows you to post to the database",
+    "exampleRequestBody": 
+        {
+          "username": "dinosaur_lover",
+          "body": "Text from the article.."
+        }
+  },
+
+  "PATCH /api/articles/:article_id": {
+    "description": "allows you to update votes on an article by the amount you set",
+    "exampleRequestBody": 
+        {
+          "inc_votes": 100
+        }
+  },
+
+  "GET /api/users": {
+    "description": "gives you an array of user objects",
+    "exampleResponse": {
+      "users": [
+        {
+          "username" : "dinosaur_lover",
+          "name": "Adam",
+          "avatar_url": "example-url-to-image"
+        },
+        {
+          "username" : "crazy_eight",
+          "name": "Lois",
+          "avatar_url": "example-url-to-image"
+        }
+      ]
+    }
+  },
+
+  "DELETE /api/comments/:comment_id": {
+    "description": "deletes comment by given comment id"
   }
 }
