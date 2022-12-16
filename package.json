@@ -2,13 +2,15 @@
   "name": "be-nc-news",
   "version": "1.0.0",
   "description": "bc-nc-news",
-  "main": "index.js",
+  "main": "listen.js",
   "scripts": {
     "setup-dbs": "psql -f ./db/setup.sql",
     "seed": "node ./db/seeds/run-seed.js",
     "test": "jest",
     "prepare": "husky install",
-    "scrap": "psql -f ./db/scrap.sql"
+    "scrap": "psql -f ./db/scrap.sql",
+    "start": "node listen.js",
+    "seed-prod": "NODE_ENV=production npm run seed"
   },
   "repository": {
     "type": "git",
