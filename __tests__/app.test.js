@@ -494,17 +494,19 @@ describe("get api", () => {
       .expect(200)
       .then(({ body: { endpoints } }) => {
         const keys = Object.keys(endpoints);
-        expect(keys).toEqual([
-          "GET /api",
-          "GET /api/topics",
-          "GET /api/articles",
-          "GET /api/articles/:article_id",
-          "GET /api/articles/:article_id/comments",
-          "POST /api/articles/:article_id/comments",
-          "PATCH /api/articles/:article_id",
-          "GET /api/users",
-          "DELETE /api/comments/:comment_id",
-        ]);
+        expect(
+          keys.includes(
+            "GET /api",
+            "GET/api/articles",
+            "GET /api/topics",
+            "GET /api/articles/:article_id",
+            "GET /api/articles/:article_id/comments",
+            "POST /api/articles/:article_id/comments",
+            "PATCH /api/articles/:article_id",
+            "GET /api/users",
+            "DELETE /api/comments/:comment_id"
+          )
+        ).toBe(true);
       });
   });
 });
