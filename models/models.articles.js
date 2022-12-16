@@ -26,6 +26,7 @@ exports.selectArticles = (query) => {
   }
   SQL += groupBy;
   SQL += orderBy;
+
   return db
     .query(SQL)
     .then((articles) => {
@@ -82,7 +83,6 @@ exports.writeArticleById = (id, body) => {
     });
   }
 };
-
 
 exports.selectCommentsByArticleId = (id) => {
   return db

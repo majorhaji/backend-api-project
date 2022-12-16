@@ -9,9 +9,8 @@ const {
   postCommentByArticleId,
   patchArticleById,
 } = require("./controllers/controllers.articles");
-
-
 const { getUsers } = require("./controllers/controllers.users");
+const { deleteCommentById } = require("./controllers/controllers.comments");
 
 const {
   handle500s,
@@ -35,6 +34,8 @@ app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 app.post("/api/articles/:article_id/comments", postCommentByArticleId);
 
 app.get("/api/users", getUsers);
+
+app.delete("/api/comments/:comment_id", deleteCommentById);
 
 app.all("*", handleBadPaths);
 

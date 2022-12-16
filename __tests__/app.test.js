@@ -331,26 +331,11 @@ describe("article queries", () => {
               created_at: expect.any(String),
               votes: expect.any(Number),
               comment_count: expect.any(Number),
-
-describe("get users", () => {
-  it("200: returns users with username, name, avatar_url", () => {
-    return request(app)
-      .get("/api/users")
-      .expect(200)
-      .then(({ body: { users } }) => {
-        users.forEach((user) => {
-          expect(user).toEqual(
-            expect.objectContaining({
-              username: expect.any(String),
-              name: expect.any(String),
-              avatar_url: expect.stringContaining("https://"),
-
             })
           );
         });
       });
   });
-
 
   test("/api/articles?topic= without a query returns all articles", () => {
     return request(app)
@@ -436,9 +421,50 @@ describe("get users", () => {
         expect(articles.length).toBe(12);
       });
   });
-
 });
 
+describe("get users", () => {
+  it("200: returns users with username, name, avatar_url", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body: { users } }) => {
+        users.forEach((user) => {
+          expect(user).toEqual(
+            expect.objectContaining({
+              username: expect.any(String),
+              name: expect.any(String),
+              avatar_url: expect.stringContaining("https://"),
+            })
+          );
+        });
+      });
+  });
+});
+
+describe("delete comment by id", () => {
+  it("204: deletes comment and responds with no content", () => {
+    return request(app).delete("/api/comments/2").expect(204);
+  });
+
+  it("404: comment id doesn't exist", () => {
+    return request(app)
+      .delete("/api/comments/1099292")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Path not found");
+      });
+  });
+
+  it("400: comment id is a string", () => {
+    return request(app)
+      .delete("/api/comments/orange")
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad request");
+      });
+  });
+});
 describe("get article by id returns comment count", () => {
   it("200: resolves with article", () => {
     return request(app)
