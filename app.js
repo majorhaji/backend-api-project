@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const cors = require("cors");
 
 const apiRouter = require("./routes/api-router");
 const {
@@ -13,6 +14,8 @@ const {
   handle400s,
   handleBadPaths,
 } = require("./controllers/errors");
+
+app.use(cors());
 
 app.use("/api", apiRouter);
 
