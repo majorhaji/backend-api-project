@@ -394,6 +394,27 @@ describe("article queries", () => {
       });
   });
 
+  it("200: sort_by comment_count", () => {
+    return request(app)
+      .get("/api/articles?sort_by=comment_count")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeSorted({ descending: true, key: "comment_count" });
+        articles.forEach((article) => {
+          expect(article).toEqual(
+            expect.objectContaining({
+              article_id: expect.any(Number),
+              title: expect.any(String),
+              author: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              comment_count: expect.any(Number),
+            })
+          );
+        });
+      });
+  });
+
   it("404: topic doesn't exist", () => {
     return request(app)
       .get("/api/articles?topic=legolas")

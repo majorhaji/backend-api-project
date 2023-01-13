@@ -1,7 +1,6 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
-
 const apiRouter = require("./routes/api-router");
 const {
   postCommentByArticleId,

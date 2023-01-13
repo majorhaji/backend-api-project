@@ -16,8 +16,11 @@ exports.selectArticles = (query) => {
   let SQL = `SELECT articles.article_id, articles.author, articles.created_at, title, topic, articles.votes, COUNT(comments.article_id)::int AS comment_count FROM articles LEFT JOIN comments ON comments.article_id =articles.article_id`;
 
   let groupBy = ` GROUP BY articles.article_id`;
+  let orderBy = ``;
 
-  let orderBy = ` ORDER BY articles.${sort_by} ${order};`;
+  query[queryKey] === "comment_count"
+    ? (orderBy += ` ORDER BY ${sort_by} ${order};`)
+    : (orderBy += ` ORDER BY articles.${sort_by} ${order};`);
 
   if (validQueries.includes(queryKey) && query[queryKey]) {
     let queryString = "";
@@ -26,7 +29,6 @@ exports.selectArticles = (query) => {
   }
   SQL += groupBy;
   SQL += orderBy;
-
   return db
     .query(SQL)
     .then((articles) => {
