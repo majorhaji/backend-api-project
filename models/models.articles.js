@@ -3,16 +3,16 @@ const db = require("../db/connection.js");
 exports.selectArticles = (query) => {
   const validQueries = ["topic"];
 
-  let sort_by = "";
+  let sort_by = query.sort_by;
   let order = "desc";
   if (query.hasOwnProperty("order")) {
     order = query.order;
   }
   const queryKey = Object.keys(query)[0];
 
-  queryKey === "sort_by"
-    ? (sort_by = query[queryKey])
-    : (sort_by = "created_at");
+  // queryKey === "sort_by"
+  //   ? (sort_by = query[queryKey])
+  //   : (sort_by = "created_at");
 
   if (query[queryKey] === "asc") order = "asc";
 
@@ -21,7 +21,7 @@ exports.selectArticles = (query) => {
   let groupBy = ` GROUP BY articles.article_id`;
   let orderBy = ``;
 
-  query[queryKey] === "comment_count"
+  sort_by === "comment_count"
     ? (orderBy += ` ORDER BY ${sort_by} ${order};`)
     : (orderBy += ` ORDER BY articles.${sort_by} ${order};`);
 
@@ -32,9 +32,12 @@ exports.selectArticles = (query) => {
   }
 
   SQL += groupBy;
-  SQL += orderBy;
+  if (query.sort_by) {
+    SQL += orderBy;
+  } else {
+    SQL += ` ORDER BY articles.created_at ${order}`;
+  }
 
-  console.log(SQL);
   return db
     .query(SQL)
     .then((articles) => {
