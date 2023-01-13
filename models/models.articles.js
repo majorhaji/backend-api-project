@@ -5,6 +5,9 @@ exports.selectArticles = (query) => {
 
   let sort_by = "";
   let order = "desc";
+  if (query.hasOwnProperty("order")) {
+    order = query.order;
+  }
   const queryKey = Object.keys(query)[0];
 
   queryKey === "sort_by"
@@ -27,8 +30,11 @@ exports.selectArticles = (query) => {
     queryString += ` WHERE ${queryKey}='${query[queryKey]}'`;
     SQL += queryString;
   }
+
   SQL += groupBy;
   SQL += orderBy;
+
+  console.log(SQL);
   return db
     .query(SQL)
     .then((articles) => {
